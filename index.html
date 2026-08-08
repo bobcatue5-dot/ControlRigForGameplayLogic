@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07080d">
+  <title>Control Rig for Gameplay Logic</title>
+  <meta name="description" content="A Cross-Runtime Gameplay Framework for Unreal Engine & UEFN">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="bg-orb orb-a"></div>
+  <div class="bg-orb orb-b"></div>
+  <div class="grain"></div>
+
+  <header class="nav">
+    <a class="mini-brand" href="#overview"><span class="brand-dot"></span>CRGL</a>
+    <div class="nav-links">
+      <a href="#overview">Overview</a>
+      <a href="#documentation">Documentation</a>
+    </div>
+  </header>
+
+  <main>
+    <section id="overview" class="overview">
+      <div class="overview-inner reveal">
+        <img class="logo" src="assets/logo.png" alt="Control Rig for Gameplay Logic — A Cross-Runtime Gameplay Framework for Unreal Engine & UEFN">
+        <div class="video-frame">
+          <video controls playsinline preload="metadata">
+            <source src="assets/demo.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#documentation">Documentation <span>↓</span></a>
+    </section>
+
+    <section id="documentation" class="docs-shell">
+      <aside class="toc reveal">
+        <div class="toc-title">Documentation</div>
+        <a href="#introduction">Introduction</a>
+        <a href="#world-rigs">World Rigs</a>
+        <a href="#creating">Creating a World Rig</a>
+        <a href="#hierarchy">Hierarchy & Components</a>
+        <a href="#placing">Placing a World Rig</a>
+        <a href="#why-assets">Why Control Rigs + Blueprints</a>
+        <a href="#communication">World Rig Communication</a>
+        <a href="#drivers">Drivers</a>
+        <a href="#uefn">Importing into UEFN</a>
+        <a href="#roadmap">Roadmap</a>
+      </aside>
+
+      <article class="docs">
+        <div id="introduction" class="doc-section reveal">
+          <p class="eyebrow">Documentation</p>
+          <h1>Introduction</h1>
+          <p><strong>Control Rig for Gameplay Logic</strong> is an experimental framework for Unreal Engine and UEFN that expands Control Rig beyond its traditional role as an animation system.</p>
+          <p>Control Rig already provides a powerful visual environment for manipulating characters, skeletal meshes, transforms, and other data in real time. This project explores a simple question: <strong>what if that same system could be used to build gameplay logic?</strong></p>
+          <p>Instead of limiting a Control Rig to determining how a character is posed, the framework allows rigs to participate in the wider game world. A rig can receive player input, process gameplay data, communicate with other rigs, and drive actors and interactive objects.</p>
+          <p>At the center of the framework is a new concept called a <strong>World Rig</strong>. Each World Rig connects a Control Rig with a linked Blueprint that acts as its interface with the game world. This allows Control Rig logic to send and receive information while retaining the visual, procedural workflow of Control Rig.</p>
+          <p>The framework is designed around two goals: <strong>expanding what creators can build with Control Rig</strong> and <strong>creating gameplay systems that can operate across both Unreal Engine and UEFN.</strong></p>
+          <p>This documentation explains the current prototype, how World Rigs work, how rigs communicate, and how the framework can be used to build gameplay systems.</p>
+        </div>
+
+        <div id="world-rigs" class="doc-section reveal">
+          <h2>World Rigs</h2>
+          <div class="world-rig-intro">
+            <img class="asset-icon" src="assets/pdf-p1-img1.png" alt="World Rig asset">
+            <div>
+              <p>The <strong>World Rig</strong> is the core asset type introduced by Control Rig for Gameplay Logic. It connects the logic created inside a Control Rig to actors and systems in the game world.</p>
+              <p>Each World Rig consists of two linked components: a <strong>Control Rig</strong> and a <strong>Blueprint host</strong>. The Control Rig contains the visual logic, while the Blueprint provides the connection between that logic and the rest of the game.</p>
+            </div>
+          </div>
+        </div>
+
+        <div id="creating" class="doc-section reveal">
+          <h3>Creating a World Rig</h3>
+          <figure class="demo-media">
+            <!-- Swapped intentionally: uploaded G2 belongs at the G1 marker. -->
+            <video class="doc-loop" autoplay loop muted playsinline preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate nofullscreen"><source src="assets/g1.mp4" type="video/mp4"></video>
+          </figure>
+          <p>Creating a new World Rig automatically creates both its Control Rig and its linked Blueprint. Opening the World Rig takes the creator directly into the familiar Control Rig editor, allowing gameplay systems to be authored using the same graph-based workflow as a traditional Control Rig.</p>
+          <p>The linked Blueprint is managed alongside the World Rig rather than requiring the creator to manually construct and configure a separate host actor.</p>
+        </div>
+
+        <div id="hierarchy" class="doc-section reveal">
+          <h3>Hierarchy and Components</h3>
+          <p>World Rigs can also use Control Rig's existing hierarchy system to represent objects they control.</p>
+          <p>When a skeletal mesh hierarchy is imported into a World Rig, the framework automatically adds the corresponding <strong>Skeletal Mesh Component</strong> to its linked Blueprint and establishes the connection between the two.</p>
+          <figure class="demo-media">
+            <!-- Swapped intentionally: uploaded G1 belongs at the G2 marker. -->
+            <video class="doc-loop" autoplay loop muted playsinline preload="auto" disablepictureinpicture controlslist="nodownload noplaybackrate nofullscreen"><source src="assets/g2.mp4" type="video/mp4"></video>
+          </figure>
+          <p>This allows the Control Rig hierarchy to represent more than abstract gameplay data—the objects represented inside the rig can correspond directly to components in the world.</p>
+        </div>
+
+        <div id="placing" class="doc-section reveal">
+          <h3>Placing a World Rig</h3>
+          <p>When a World Rig is placed into a level, its linked Blueprint is instantiated in the world.</p>
+          <p>This Blueprint acts as the World Rig's runtime host. It contains the components required by the rig and provides an interface through which the Control Rig can communicate with systems outside of itself.</p>
+          <p>This architecture keeps most of the creator-facing logic inside <strong>Control Rig</strong>, while the linked Blueprint handles the functionality necessary to connect that logic to the game world.</p>
+        </div>
+
+        <div id="why-assets" class="doc-section reveal">
+          <h3>Why World Rigs Use Control Rigs and Blueprints</h3>
+          <p><strong>Although World Rigs are created and managed through the World Rig plugin, the World Rig itself is ultimately composed of standard Control Rig and Blueprint assets.</strong></p>
+          <p><strong>This is intentional.</strong> UEFN does not support Unreal Engine plugins, so the framework cannot depend on the World Rig plugin once content is brought into UEFN. By building World Rigs from assets that both environments understand, completed World Rigs can be imported into UEFN while retaining their gameplay logic and functionality.</p>
+          <p>The plugin therefore acts primarily as an <strong>authoring layer</strong>: it makes creating, linking, and working with World Rigs easier in Unreal Engine, while the resulting assets are designed to operate without the plugin.</p>
+          <figure class="wide-image">
+            <img src="assets/pdf-p3-img1.png" alt="Control Rig and Blueprint side by side">
+          </figure>
+        </div>
+
+        <div id="communication" class="doc-section reveal">
+          <h2>World Rig Communication</h2>
+          <p>World Rigs need a way to exchange information. Some information can be accessed directly—for example, the world-space location of another object. More abstract gameplay data, such as booleans, numbers, states, or inputs, requires a way to represent that information in a form Control Rig can access.</p>
+          <p>This is where <strong>Drivers</strong> come in.</p>
+        </div>
+
+        <div id="drivers" class="doc-section reveal">
+          <h3>Drivers</h3>
+          <p>A <strong>Driver</strong> is an actor whose transform is used to store and transmit gameplay data. Rather than existing as a visible part of the game world, a Driver acts as a lightweight bridge between gameplay systems and Control Rig.</p>
+
+          <div class="channel-grid">
+            <div><span>Location</span><strong>X, Y, Z</strong></div>
+            <div><span>Rotation</span><strong>X, Y, Z</strong></div>
+            <div><span>Scale</span><strong>X, Y, Z</strong></div>
+          </div>
+
+          <p>These channels can be assigned different meanings depending on what a World Rig needs to communicate.</p>
+
+          <div class="callout">
+            <span>Boolean example</span>
+            <strong>Location X = 0 → False</strong>
+            <strong>Location X = 1 → True</strong>
+          </div>
+
+          <p>A gameplay system can modify that value through its linked Blueprint. Another World Rig can then read the Driver's transform and interpret the value inside Control Rig.</p>
+          <p>Drivers aren't limited to booleans. The same approach can represent numerical values, player input, states, vectors, or multiple pieces of information simultaneously by assigning different data to different transform channels.</p>
+
+          <h4>Why Drivers?</h4>
+          <p>Control Rig already has a powerful system for working with transforms. Drivers take advantage of that existing capability rather than requiring Control Rig to understand every external gameplay system directly.</p>
+
+          <div class="flow">
+            <span>Game / World Rig</span><b>→</b><span class="accent">Driver</span><b>→</b><span>Control Rig</span>
+          </div>
+          <div class="flow">
+            <span>Control Rig</span><b>→</b><span class="accent">Driver</span><b>→</b><span>Game / World Rig</span>
+          </div>
+
+          <p>A Driver therefore acts as a shared language between otherwise separate World Rigs.</p>
+        </div>
+
+        <div id="uefn" class="doc-section reveal">
+          <h2>Importing into UEFN</h2>
+          <p>One of the primary goals of Control Rig for Gameplay Logic is allowing World Rigs created in Unreal Engine to operate inside UEFN. Because a World Rig ultimately consists of standard Control Rig and Blueprint assets, its core logic can be brought into a UEFN project without requiring the World Rig plugin itself.</p>
+          <p>There is, however, one important difference between the two environments: <strong>how player input reaches the Movement Driver.</strong></p>
+
+          <h3>Player Input in Unreal Engine</h3>
+          <figure class="code-image">
+            <img src="assets/pdf-p5-img1.png" alt="Unreal Engine Blueprint input logic">
+          </figure>
+          <p>In Unreal Engine, player input can be read directly through Blueprint. The World Rig's linked Blueprint detects keyboard or gamepad input and writes those values to the appropriate channels of the Movement Driver.</p>
+          <p>The Control Rig can then read the Movement Driver and use that information to control the character.</p>
+
+          <h3>Player Input in UEFN</h3>
+          <figure class="code-image tall">
+            <img src="assets/pdf-p5-img2.png" alt="Verse code reconstructing player input from Fortnite character movement">
+          </figure>
+          <p>UEFN requires a different approach. Instead of relying on the same Blueprint input system, the UEFN implementation observes the Fortnite character's movement and uses Verse to reconstruct the player's underlying directional input.</p>
+          <p>In effect, the system works backwards: the Fortnite character's resulting movement provides information about what the player is doing, and that information is translated back into values representing the corresponding keyboard or gamepad input.</p>
+          <p>Those reconstructed values are then written to the same Movement Driver expected by the World Rig.</p>
+
+          <div class="pipeline-card">
+            <span>Unreal Engine</span>
+            <strong>Player Input → Blueprint → Movement Driver → World Rig</strong>
+          </div>
+          <div class="pipeline-card">
+            <span>UEFN</span>
+            <strong>Fortnite Character Movement → Verse → Reconstructed Input → Movement Driver → World Rig</strong>
+          </div>
+
+          <p>From the perspective of the World Rig, the source no longer matters. Both implementations produce the same Driver data, allowing the Control Rig gameplay logic itself to remain largely unchanged between Unreal Engine and UEFN.</p>
+          <p><strong>The input layer is adapted rather than rebuilding the World Rig's actual gameplay logic for Fortnite.</strong></p>
+        </div>
+
+        <div id="roadmap" class="doc-section reveal">
+          <h2>Roadmap</h2>
+          <p>The current prototype establishes the core World Rig workflow, cross-rig communication, and UE/UEFN compatibility. The next stage is focused on making that workflow faster, more automatic, and easier to test.</p>
+
+          <div class="roadmap-grid">
+            <div class="roadmap-card">
+              <span>01</span>
+              <h3>Automatic UEFN Import</h3>
+              <p>A future version of the framework would automate the process of preparing a World Rig for UEFN. Instead of manually moving assets and replacing environment-specific pieces, the plugin would package the compatible Control Rig and Blueprint assets and prepare them for import automatically.</p>
+              <p>As part of that process, Unreal Engine-specific Movement Drivers could be replaced with their UEFN-compatible equivalents so the same gameplay system can move between environments with minimal manual setup.</p>
+            </div>
+            <div class="roadmap-card">
+              <span>02</span>
+              <h3>Global Variables</h3>
+              <p>The framework could also provide global variables shared across every World Rig in a project.</p>
+              <p>Instead of routing commonly used values through individual Driver actors, creators could define shared gameplay data once and access it from any Control Rig. This would make larger systems easier to organize while still allowing Drivers to handle more specialized communication.</p>
+            </div>
+            <div class="roadmap-card">
+              <span>03</span>
+              <h3>Live Link Input for UEFN Editor Testing</h3>
+              <p>One of the largest workflow improvements would be a toggleable Live Link Input control for testing World Rigs directly inside UEFN's editor.</p>
+              <p>Normally, player-driven gameplay behavior must be tested by launching a Fortnite session. Live Link Input would instead feed test input directly into the World Rig while remaining in-editor, allowing creators to preview movement, interactions, and gameplay logic immediately.</p>
+              <p>The goal is to make working with a World Rig in UEFN feel much closer to working with one in Unreal Engine: edit the logic, provide input, and see the result without repeatedly launching a session.</p>
+            </div>
+          </div>
+
+          <h3>Long-Term Goal</h3>
+          <p>The long-term goal is for the framework to handle the differences between Unreal Engine and UEFN automatically, allowing creators to focus on building the gameplay system itself rather than maintaining separate implementations for each environment.</p>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
